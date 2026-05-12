@@ -11,6 +11,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
 
+  final TextEditingController _categoryController = TextEditingController();
+  
   @override
   void initState() {
     super.initState();
@@ -90,7 +92,54 @@ class _HomeScreenState extends State<HomeScreen> {
 
       floatingActionButton: FloatingActionButton(
 
-        onPressed: () {},
+        onPressed: () {
+          showDialog(
+            context: context,
+
+            builder: (context) {
+              return AlertDialog(
+
+                title: const Text('Create Category'),
+
+                content: TextField(
+                  controller: _categoryController,
+
+                  decoration: const InputDecoration(
+                    hintText: 'Enter folder name',
+                  ),
+                ),
+
+                actions: [
+
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+
+                    child: const Text('Cancel'),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: () async {
+
+                      final name = _categoryController.text.trim();
+
+                      if (name.isEmpty) return;
+
+                      await provider.addCategory(name);
+
+                      _categoryController.clear();
+
+                      Navigator.pop(context);
+                    },
+
+                    child: const Text('Create'),
+                  ),
+                ],
+              );
+            },
+          );
+        },
 
         child: const Icon(Icons.add),
       ),
