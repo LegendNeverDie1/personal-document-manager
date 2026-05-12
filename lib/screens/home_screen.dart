@@ -1,6 +1,11 @@
-import 'package:documentmanager/providers/category_provider.dart';
 import 'package:flutter/material.dart';
+
+// Providers 
+import 'package:documentmanager/providers/category_provider.dart';
 import 'package:provider/provider.dart';
+
+// Widgets 
+import 'package:documentmanager/widgets/category_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -77,15 +82,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 final category = provider.categories[index];
 
-                return ListTile(
-
-                  leading: const Icon(Icons.folder),
-
-                  title: Text(category.name),
-
-                  subtitle: Text(
-                    category.createdAt.toString(),
-                  ),
+                return CategoryCard(
+                  category: category,
+                  
+                  onTap: () {
+                  },
                 );
               },
             ),
