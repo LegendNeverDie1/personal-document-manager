@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 // Widgets 
 import 'package:documentmanager/widgets/category_card.dart';
 
+// Screens
+import 'package:documentmanager/screens/folder_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -86,6 +89,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   category: category,
                   
                   onTap: () {
+
+                    Navigator.push(
+
+                      context,
+
+                      MaterialPageRoute(
+                        builder: (context) => FolderScreen(
+                          folderName: category.name,
+                        ),
+                      ),
+                    );
                   },
                 );
               },
