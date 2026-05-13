@@ -1,6 +1,25 @@
-import 'package:documentmanager/models/document_model.dart';
-import 'package:documentmanager/services/document_service.dart';
+// FLutter 
 import 'package:flutter/material.dart';
+
+// used for file/directory/copying files
+import 'dart:io';
+import 'package:path/path.dart' as path;
+import 'package:path_provider/path_provider.dart';
+
+// File Picker
+import 'package:file_picker/file_picker.dart';
+
+// Models
+import 'package:documentmanager/models/document_model.dart';
+
+// Services
+import 'package:documentmanager/services/document_service.dart';
+
+// Widgets
+import 'package:documentmanager/widgets/document_card.dart';
+
+// Screens
+import 'package:documentmanager/screens/document_viewer_screen.dart';
 
 class FolderScreen extends StatefulWidget {
 
@@ -33,14 +52,81 @@ class _FolderScreenState extends State<FolderScreen> {
 
   Future<void> loadDocuments() async {
 
-    final loadedDocuments =
-        await _documentService.getDocumentsByCategory(
-      widget.categoryId,
-    );
+    final loadedDocuments = await _documentService.getDocumentsByCategory( widget.categoryId,);
 
     setState(() {
       documents = loadedDocuments;
     });
+  }
+
+  Future<void> pickDocument() async {
+    final result = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: [
+        'pdf',
+        'jpg',
+        'png',
+        'jpeg',
+      ],
+    );
+
+    if ( result == null ) {
+      return;
+    }
+
+    final pickedFile = result.files.first;
+
+    if (pickedFile.path == null) return;
+
+    final appDir = await getApplicationDocumentsDirectory();
+
+    final categoryFolder = Directory(
+      path.join(
+        appDir.path, 
+        'AppDocuments', 
+        widget.folderName,
+      ),
+    );
+
+    if (!await categoryFolder.exists()) {
+      await categoryFolder.create(recursive: true);
+    }
+
+    final timestamp = DateTime.now().millisecondsSinceEpoch; 
+
+    final fileName = '${timestamp}_${pickedFile.name}';
+
+    final savedPath = path.join(
+      categoryFolder.path, 
+      fileName,
+    );
+
+    final savedFile = await File(
+      pickedFile.path!, 
+    ).copy(savedPath);
+
+    final extension = path
+      .extension(pickedFile.name)
+      .toLowerCase();
+
+    final type = extension == '.pdf'
+      ? 'pdf'
+      : 'image';
+
+    final document = DocumentModel()
+      ..name = pickedFile.name
+      ..path = savedFile.path
+      ..type = type
+      ..categoryId = widget.categoryId
+      ..createdAt = DateTime.now();
+
+    await _documentService.addDocument(
+      document,
+    );
+
+    await loadDocuments();
+
+    print('Saved File: ${savedFile.path}');
   }
 
   @override
@@ -96,19 +182,30 @@ class _FolderScreenState extends State<FolderScreen> {
 
                 final document = documents[index];
 
-                return ListTile(
+                return  DocumentCard(
 
-                  leading: Icon(
-                    document.type == 'pdf'
-                        ? Icons.picture_as_pdf
-                        : Icons.image,
-                  ),
+                  document: document,
 
-                  title: Text(document.name),
+                  onTap: () {
 
-                  subtitle: Text(
-                    document.createdAt.toString(),
-                  ),
+                    Navigator.push(
+
+                      context,
+
+                      MaterialPageRoute(
+
+                        builder: (context) =>
+                            DocumentViewerScreen(
+
+                          documentPath: document.path,
+
+                          documentType: document.type,
+
+                          documentName: document.name,
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -116,7 +213,7 @@ class _FolderScreenState extends State<FolderScreen> {
       floatingActionButton: FloatingActionButton(
 
         onPressed: () {
-
+          pickDocument();
         },
 
         child: const Icon(Icons.add),
