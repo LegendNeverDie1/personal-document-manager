@@ -15,6 +15,8 @@ import 'package:documentmanager/models/document_model.dart';
 // Services
 import 'package:documentmanager/services/document_service.dart';
 
+// Widgets
+import 'package:documentmanager/widgets/document_card.dart';
 
 class FolderScreen extends StatefulWidget {
 
@@ -100,6 +102,27 @@ class _FolderScreenState extends State<FolderScreen> {
       pickedFile.path!, 
     ).copy(savedPath);
 
+    final extension = path
+      .extension(pickedFile.name)
+      .toLowerCase();
+
+    final type = extension == '.pdf'
+      ? 'pdf'
+      : 'image';
+
+    final document = DocumentModel()
+      ..name = pickedFile.name
+      ..path = savedFile.path
+      ..type = type
+      ..categoryId = widget.categoryId
+      ..createdAt = DateTime.now();
+
+    await _documentService.addDocument(
+      document,
+    );
+
+    await loadDocuments();
+
     print('Saved File: ${savedFile.path}');
   }
 
@@ -156,19 +179,13 @@ class _FolderScreenState extends State<FolderScreen> {
 
                 final document = documents[index];
 
-                return ListTile(
+                return  DocumentCard(
 
-                  leading: Icon(
-                    document.type == 'pdf'
-                        ? Icons.picture_as_pdf
-                        : Icons.image,
-                  ),
+                  document: document,
 
-                  title: Text(document.name),
+                  onTap: () {
 
-                  subtitle: Text(
-                    document.createdAt.toString(),
-                  ),
+                  },
                 );
               },
             ),
