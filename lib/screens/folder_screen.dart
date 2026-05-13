@@ -18,6 +18,9 @@ import 'package:documentmanager/services/document_service.dart';
 // Widgets
 import 'package:documentmanager/widgets/document_card.dart';
 
+// Screens
+import 'package:documentmanager/screens/document_viewer_screen.dart';
+
 class FolderScreen extends StatefulWidget {
 
   final String folderName;
@@ -185,6 +188,23 @@ class _FolderScreenState extends State<FolderScreen> {
 
                   onTap: () {
 
+                    Navigator.push(
+
+                      context,
+
+                      MaterialPageRoute(
+
+                        builder: (context) =>
+                            DocumentViewerScreen(
+
+                          documentPath: document.path,
+
+                          documentType: document.type,
+
+                          documentName: document.name,
+                        ),
+                      ),
+                    );
                   },
                 );
               },
