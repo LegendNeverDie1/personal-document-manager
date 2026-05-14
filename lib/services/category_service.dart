@@ -42,4 +42,22 @@ class CategoryService {
         )
         .findAll();
   }
+
+  Future<void> updateCategoryTimestamp(int categoryId) async {
+    final isar = IsarService.isar;
+
+    final category = await isar.categoryModels.get(categoryId); 
+
+    if (category == null) return;
+
+    category.updatedAt = DateTime.now(); 
+
+    await isar.writeTxn(() async {
+      await isar.categoryModels.put(category);
+    });
+
+    if (category.parentCategoryId != null ) {
+      await updateCategoryTimestamp(category.parentCategoryId!);
+    }
+  }
 }

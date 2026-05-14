@@ -11,4 +11,6 @@ class CategoryModel {
   int? parentCategoryId;
 
   late DateTime createdAt;
+  
+  late DateTime updatedAt;
 }

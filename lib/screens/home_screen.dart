@@ -149,7 +149,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         ..parentCategoryId = null
 
-                        ..createdAt = DateTime.now();
+                        ..createdAt = DateTime.now()
+                        ..updatedAt = DateTime.now();
 
                       await provider.addCategory(
                         category,

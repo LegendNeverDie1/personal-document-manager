@@ -41,6 +41,11 @@ const DocumentModelSchema = CollectionSchema(
       id: 4,
       name: r'type',
       type: IsarType.string,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 5,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _documentModelEstimateSize,
@@ -80,6 +85,7 @@ void _documentModelSerialize(
   writer.writeString(offsets[2], object.name);
   writer.writeString(offsets[3], object.path);
   writer.writeString(offsets[4], object.type);
+  writer.writeDateTime(offsets[5], object.updatedAt);
 }
 
 DocumentModel _documentModelDeserialize(
@@ -95,6 +101,7 @@ DocumentModel _documentModelDeserialize(
   object.name = reader.readString(offsets[2]);
   object.path = reader.readString(offsets[3]);
   object.type = reader.readString(offsets[4]);
+  object.updatedAt = reader.readDateTime(offsets[5]);
   return object;
 }
 
@@ -115,6 +122,8 @@ P _documentModelDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 4:
       return (reader.readString(offset)) as P;
+    case 5:
+      return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -786,6 +795,62 @@ extension DocumentModelQueryFilter
       ));
     });
   }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      updatedAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      updatedAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      updatedAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterFilterCondition>
+      updatedAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension DocumentModelQueryObject
@@ -855,6 +920,19 @@ extension DocumentModelQuerySortBy
   QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> sortByTypeDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'type', Sort.desc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy>
+      sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
 }
@@ -934,6 +1012,19 @@ extension DocumentModelQuerySortThenBy
       return query.addSortBy(r'type', Sort.desc);
     });
   }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy> thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QAfterSortBy>
+      thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension DocumentModelQueryWhereDistinct
@@ -968,6 +1059,12 @@ extension DocumentModelQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'type', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<DocumentModel, DocumentModel, QDistinct> distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
     });
   }
 }
@@ -1007,6 +1104,12 @@ extension DocumentModelQueryProperty
   QueryBuilder<DocumentModel, String, QQueryOperations> typeProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'type');
+    });
+  }
+
+  QueryBuilder<DocumentModel, DateTime, QQueryOperations> updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }

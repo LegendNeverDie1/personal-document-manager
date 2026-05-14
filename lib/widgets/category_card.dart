@@ -62,7 +62,7 @@ class CategoryCard extends StatelessWidget {
                     const SizedBox(height: 6),
 
                     Text(
-                      'Created on ${category.createdAt.day}/${category.createdAt.month}/${category.createdAt.year}',
+                      'Last Updated on ${category.updatedAt.day}/${category.updatedAt.month}/${category.updatedAt.year}',
 
                       style: Theme.of(context)
                           .textTheme

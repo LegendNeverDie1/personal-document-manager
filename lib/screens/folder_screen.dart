@@ -137,11 +137,14 @@ class _FolderScreenState extends State<FolderScreen> {
       ..path = savedFile.path
       ..type = type
       ..categoryId = widget.categoryId
-      ..createdAt = DateTime.now();
+      ..createdAt = DateTime.now()
+      ..updatedAt = DateTime.now(); 
 
     await _documentService.addDocument(
       document,
     );
+
+    await _categoryService.updateCategoryTimestamp(widget.categoryId); 
 
     await loadDocuments();
 
@@ -191,11 +194,13 @@ class _FolderScreenState extends State<FolderScreen> {
                       ..parentCategoryId =
                           widget.categoryId
 
-                      ..createdAt =
-                          DateTime.now();
+                      ..createdAt = DateTime.now()
+                      ..updatedAt = DateTime.now();
 
                 await _categoryService
                     .addCategory(category);
+
+                await _categoryService.updateCategoryTimestamp(widget.categoryId);
 
                 await loadSubfolders();
 

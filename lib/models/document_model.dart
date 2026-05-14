@@ -11,5 +11,6 @@ class DocumentModel {
   late String type; 
   late int categoryId; 
   late DateTime createdAt; 
+  late DateTime updatedAt;
   
 }

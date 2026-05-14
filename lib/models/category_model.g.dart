@@ -31,6 +31,11 @@ const CategoryModelSchema = CollectionSchema(
       id: 2,
       name: r'parentCategoryId',
       type: IsarType.long,
+    ),
+    r'updatedAt': PropertySchema(
+      id: 3,
+      name: r'updatedAt',
+      type: IsarType.dateTime,
     )
   },
   estimateSize: _categoryModelEstimateSize,
@@ -66,6 +71,7 @@ void _categoryModelSerialize(
   writer.writeDateTime(offsets[0], object.createdAt);
   writer.writeString(offsets[1], object.name);
   writer.writeLong(offsets[2], object.parentCategoryId);
+  writer.writeDateTime(offsets[3], object.updatedAt);
 }
 
 CategoryModel _categoryModelDeserialize(
@@ -79,6 +85,7 @@ CategoryModel _categoryModelDeserialize(
   object.id = id;
   object.name = reader.readString(offsets[1]);
   object.parentCategoryId = reader.readLongOrNull(offsets[2]);
+  object.updatedAt = reader.readDateTime(offsets[3]);
   return object;
 }
 
@@ -95,6 +102,8 @@ P _categoryModelDeserializeProp<P>(
       return (reader.readString(offset)) as P;
     case 2:
       return (reader.readLongOrNull(offset)) as P;
+    case 3:
+      return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -514,6 +523,62 @@ extension CategoryModelQueryFilter
       ));
     });
   }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      updatedAtEqualTo(DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      updatedAtGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      updatedAtLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'updatedAt',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      updatedAtBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'updatedAt',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension CategoryModelQueryObject
@@ -560,6 +625,19 @@ extension CategoryModelQuerySortBy
       sortByParentCategoryIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'parentCategoryId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy> sortByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy>
+      sortByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
     });
   }
 }
@@ -616,6 +694,19 @@ extension CategoryModelQuerySortThenBy
       return query.addSortBy(r'parentCategoryId', Sort.desc);
     });
   }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy> thenByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy>
+      thenByUpdatedAtDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'updatedAt', Sort.desc);
+    });
+  }
 }
 
 extension CategoryModelQueryWhereDistinct
@@ -637,6 +728,12 @@ extension CategoryModelQueryWhereDistinct
       distinctByParentCategoryId() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'parentCategoryId');
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QDistinct> distinctByUpdatedAt() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'updatedAt');
     });
   }
 }
@@ -665,6 +762,12 @@ extension CategoryModelQueryProperty
       parentCategoryIdProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'parentCategoryId');
+    });
+  }
+
+  QueryBuilder<CategoryModel, DateTime, QQueryOperations> updatedAtProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'updatedAt');
     });
   }
 }
