@@ -8,5 +8,7 @@ class CategoryModel {
 
   late String name;
 
+  int? parentCategoryId;
+
   late DateTime createdAt;
 }

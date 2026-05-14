@@ -7,13 +7,13 @@ class CategoryProvider extends ChangeNotifier {
 
   List<CategoryModel> categories = []; 
 
-  Future<void> loadCategories() async {
-    categories = await _categoryService.getCategory();
+  Future<void> loadCategories(int? parentCategoryId,) async {
+    categories = await _categoryService.getCategoriesByParent(parentCategoryId);
     notifyListeners();
   }
 
-  Future<void> addCategory(String name) async {
+  Future<void> addCategory(String name, int? parentCategoryId) async {
     await _categoryService.addCategory(name); 
-    await loadCategories();
+    await loadCategories(parentCategoryId);
   }
 }

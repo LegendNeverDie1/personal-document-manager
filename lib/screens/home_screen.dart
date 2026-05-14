@@ -29,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Provider.of<CategoryProvider>(
         context,
         listen: false,
-      ).loadCategories();
+      ).loadCategories(null);
     });
   }
 
@@ -142,7 +142,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       if (name.isEmpty) return;
 
-                      await provider.addCategory(name);
+                      await provider.addCategory(name, null);
 
                       _categoryController.clear();
 

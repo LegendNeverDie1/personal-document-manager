@@ -26,6 +26,11 @@ const CategoryModelSchema = CollectionSchema(
       id: 1,
       name: r'name',
       type: IsarType.string,
+    ),
+    r'parentCategoryId': PropertySchema(
+      id: 2,
+      name: r'parentCategoryId',
+      type: IsarType.long,
     )
   },
   estimateSize: _categoryModelEstimateSize,
@@ -60,6 +65,7 @@ void _categoryModelSerialize(
 ) {
   writer.writeDateTime(offsets[0], object.createdAt);
   writer.writeString(offsets[1], object.name);
+  writer.writeLong(offsets[2], object.parentCategoryId);
 }
 
 CategoryModel _categoryModelDeserialize(
@@ -72,6 +78,7 @@ CategoryModel _categoryModelDeserialize(
   object.createdAt = reader.readDateTime(offsets[0]);
   object.id = id;
   object.name = reader.readString(offsets[1]);
+  object.parentCategoryId = reader.readLongOrNull(offsets[2]);
   return object;
 }
 
@@ -86,6 +93,8 @@ P _categoryModelDeserializeProp<P>(
       return (reader.readDateTime(offset)) as P;
     case 1:
       return (reader.readString(offset)) as P;
+    case 2:
+      return (reader.readLongOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -431,6 +440,80 @@ extension CategoryModelQueryFilter
       ));
     });
   }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      parentCategoryIdIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'parentCategoryId',
+      ));
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      parentCategoryIdIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'parentCategoryId',
+      ));
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      parentCategoryIdEqualTo(int? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'parentCategoryId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      parentCategoryIdGreaterThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'parentCategoryId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      parentCategoryIdLessThan(
+    int? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'parentCategoryId',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterFilterCondition>
+      parentCategoryIdBetween(
+    int? lower,
+    int? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'parentCategoryId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
 }
 
 extension CategoryModelQueryObject
@@ -463,6 +546,20 @@ extension CategoryModelQuerySortBy
   QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy> sortByNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'name', Sort.desc);
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy>
+      sortByParentCategoryId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentCategoryId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy>
+      sortByParentCategoryIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentCategoryId', Sort.desc);
     });
   }
 }
@@ -505,6 +602,20 @@ extension CategoryModelQuerySortThenBy
       return query.addSortBy(r'name', Sort.desc);
     });
   }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy>
+      thenByParentCategoryId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentCategoryId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QAfterSortBy>
+      thenByParentCategoryIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'parentCategoryId', Sort.desc);
+    });
+  }
 }
 
 extension CategoryModelQueryWhereDistinct
@@ -519,6 +630,13 @@ extension CategoryModelQueryWhereDistinct
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'name', caseSensitive: caseSensitive);
+    });
+  }
+
+  QueryBuilder<CategoryModel, CategoryModel, QDistinct>
+      distinctByParentCategoryId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'parentCategoryId');
     });
   }
 }
@@ -540,6 +658,13 @@ extension CategoryModelQueryProperty
   QueryBuilder<CategoryModel, String, QQueryOperations> nameProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'name');
+    });
+  }
+
+  QueryBuilder<CategoryModel, int?, QQueryOperations>
+      parentCategoryIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'parentCategoryId');
     });
   }
 }

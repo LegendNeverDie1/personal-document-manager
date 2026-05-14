@@ -1,4 +1,5 @@
 // FLutter 
+import 'package:documentmanager/widgets/category_card.dart';
 import 'package:flutter/material.dart';
 
 // used for file/directory/copying files
@@ -11,9 +12,11 @@ import 'package:file_picker/file_picker.dart';
 
 // Models
 import 'package:documentmanager/models/document_model.dart';
+import 'package:documentmanager/models/category_model.dart';
 
 // Services
 import 'package:documentmanager/services/document_service.dart';
+import 'package:documentmanager/services/category_service.dart';
 
 // Widgets
 import 'package:documentmanager/widgets/document_card.dart';
@@ -43,11 +46,25 @@ class _FolderScreenState extends State<FolderScreen> {
 
   List<DocumentModel> documents = [];
 
+  final CategoryService _categoryService = CategoryService();
+
+  List<CategoryModel> subfolders = [];
+
   @override
   void initState() {
     super.initState();
 
     loadDocuments();
+
+    loadSubfolders();
+  }
+
+  Future<void> loadSubfolders() async {
+    final loadedCategories = await _categoryService.getCategoriesByParent(widget.categoryId,);
+
+    setState(() {
+      subfolders = loadedCategories;
+    });
   }
 
   Future<void> loadDocuments() async {
@@ -132,22 +149,27 @@ class _FolderScreenState extends State<FolderScreen> {
   @override
   Widget build(BuildContext context) {
 
+    final hasSubfolders = subfolders.isNotEmpty;
+
+    final hasDocuments = documents.isNotEmpty;
+
     return Scaffold(
 
       appBar: AppBar(
         title: Text(widget.folderName),
       ),
 
-      body: documents.isEmpty
+      body: (!hasSubfolders && !hasDocuments)
 
           ? const Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment:
+                    MainAxisAlignment.center,
 
                 children: [
 
                   Icon(
-                    Icons.description_outlined,
+                    Icons.folder_open,
                     size: 80,
                     color: Colors.grey,
                   ),
@@ -155,7 +177,7 @@ class _FolderScreenState extends State<FolderScreen> {
                   SizedBox(height: 16),
 
                   Text(
-                    'No documents yet',
+                    'Folder is empty',
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -165,7 +187,7 @@ class _FolderScreenState extends State<FolderScreen> {
                   SizedBox(height: 8),
 
                   Text(
-                    'Upload your first document',
+                    'Add subfolders or documents',
                     style: TextStyle(
                       color: Colors.grey,
                     ),
@@ -174,40 +196,117 @@ class _FolderScreenState extends State<FolderScreen> {
               ),
             )
 
-          : ListView.builder(
+          : SingleChildScrollView(
 
-              itemCount: documents.length,
+              child: Column(
 
-              itemBuilder: (context, index) {
+                crossAxisAlignment:
+                    CrossAxisAlignment.start,
 
-                final document = documents[index];
+                children: [
 
-                return  DocumentCard(
+                  // SUBFOLDERS SECTION
 
-                  document: document,
+                  if (hasSubfolders) ...
 
-                  onTap: () {
-
-                    Navigator.push(
-
-                      context,
-
-                      MaterialPageRoute(
-
-                        builder: (context) =>
-                            DocumentViewerScreen(
-
-                          documentPath: document.path,
-
-                          documentType: document.type,
-
-                          documentName: document.name,
+                    [
+                      const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          'Folders',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
                         ),
                       ),
-                    );
-                  },
-                );
-              },
+
+                      ...subfolders.map(
+                        (category) {
+
+                          return CategoryCard(
+
+                            category: category,
+
+                            onTap: () {
+
+                              Navigator.push(
+
+                                context,
+
+                                MaterialPageRoute(
+
+                                  builder: (context) =>
+                                      FolderScreen(
+
+                                    folderName:
+                                        category.name,
+
+                                    categoryId:
+                                        category.id,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+
+                  // DOCUMENTS SECTION
+
+                  if (hasDocuments) ...
+
+                    [
+                      const Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Text(
+                          'Documents',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
+                        ),
+                      ),
+
+                      ...documents.map(
+                        (document) {
+
+                          return DocumentCard(
+
+                            document: document,
+
+                            onTap: () {
+
+                              Navigator.push(
+
+                                context,
+
+                                MaterialPageRoute(
+
+                                  builder: (context) =>
+                                      DocumentViewerScreen(
+
+                                    documentPath:
+                                        document.path,
+
+                                    documentType:
+                                        document.type,
+
+                                    documentName:
+                                        document.name,
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                ],
+              ),
             ),
 
       floatingActionButton: FloatingActionButton(

@@ -1,6 +1,11 @@
-import 'package:documentmanager/database/isar_service.dart';
-import 'package:documentmanager/models/category_model.dart';
+// ISAR
 import 'package:isar/isar.dart';
+
+// Database
+import 'package:documentmanager/database/isar_service.dart';
+
+// Model
+import 'package:documentmanager/models/category_model.dart';
 
 class CategoryService {
   
@@ -16,8 +21,23 @@ class CategoryService {
     });
   }
 
-  Future<List<CategoryModel>> getCategory() async {
+  Future<List<CategoryModel>> getCategoriesByParent(int? parentCategoryId,) async {
+
     final isar = IsarService.isar;
-    return await isar.categoryModels.where().findAll();
+
+    if (parentCategoryId == null) {
+
+      return await isar.categoryModels
+          .filter()
+          .parentCategoryIdIsNull()
+          .findAll();
+    }
+
+    return await isar.categoryModels
+        .filter()
+        .parentCategoryIdEqualTo(
+          parentCategoryId,
+        )
+        .findAll();
   }
 }
