@@ -9,15 +9,17 @@ import 'package:documentmanager/models/category_model.dart';
 
 class CategoryService {
   
-  Future<void> addCategory(String name) async {
-    final isar = IsarService.isar; 
-    
-    final categoryModel = CategoryModel()
-      ..name = name
-      ..createdAt = DateTime.now();
+  Future<void> addCategory(
+    CategoryModel category,
+  ) async {
+
+    final isar = IsarService.isar;
 
     await isar.writeTxn(() async {
-      await isar.categoryModels.put(categoryModel);
+
+      await isar.categoryModels.put(
+        category,
+      );
     });
   }
 

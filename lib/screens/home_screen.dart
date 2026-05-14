@@ -1,3 +1,4 @@
+import 'package:documentmanager/models/category_model.dart';
 import 'package:flutter/material.dart';
 
 // Providers 
@@ -142,7 +143,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       if (name.isEmpty) return;
 
-                      await provider.addCategory(name, null);
+                      final category = CategoryModel()
+
+                        ..name = name
+
+                        ..parentCategoryId = null
+
+                        ..createdAt = DateTime.now();
+
+                      await provider.addCategory(
+                        category,
+                      );
 
                       _categoryController.clear();
 

@@ -50,6 +50,8 @@ class _FolderScreenState extends State<FolderScreen> {
 
   List<CategoryModel> subfolders = [];
 
+  final TextEditingController _folderController = TextEditingController(); 
+
   @override
   void initState() {
     super.initState();
@@ -144,6 +146,144 @@ class _FolderScreenState extends State<FolderScreen> {
     await loadDocuments();
 
     print('Saved File: ${savedFile.path}');
+  }
+
+  Future<void> showCreateFolderDialog() async {
+    _folderController.clear(); 
+
+    await showDialog(
+      context: context, 
+
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Create Folder',),
+
+          content: TextField(
+            controller: _folderController, 
+            decoration: const InputDecoration(hintText: 'Folder Name'),
+          ),
+
+          actions: [
+             TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+
+              child: const Text('Cancel'),
+            ),
+
+            ElevatedButton(
+              onPressed: () async {
+
+                final folderName =
+                    _folderController.text
+                        .trim();
+
+                if (folderName.isEmpty) {
+                  return;
+                }
+
+                final category =
+                    CategoryModel()
+
+                      ..name = folderName
+
+                      ..parentCategoryId =
+                          widget.categoryId
+
+                      ..createdAt =
+                          DateTime.now();
+
+                await _categoryService
+                    .addCategory(category);
+
+                await loadSubfolders();
+
+                if (mounted) {
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text('Create'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showExplorerActions() {
+
+    showModalBottomSheet(
+
+      context: context,
+
+      builder: (context) {
+
+        return SafeArea(
+
+          child: Column(
+
+            mainAxisSize: MainAxisSize.min,
+
+            children: [
+
+              ListTile(
+
+                leading: const Icon(
+                  Icons.create_new_folder,
+                ),
+
+                title: const Text(
+                  'Create Folder',
+                ),
+
+                onTap: () {
+
+                  Navigator.pop(context);
+
+                  showCreateFolderDialog();
+                },
+              ),
+
+              ListTile(
+
+                leading: const Icon(
+                  Icons.upload_file,
+                ),
+
+                title: const Text(
+                  'Upload File',
+                ),
+
+                onTap: () {
+
+                  Navigator.pop(context);
+
+                  pickDocument();
+                },
+              ),
+
+              ListTile(
+
+                leading: const Icon(
+                  Icons.note_add,
+                ),
+
+                title: const Text(
+                  'Create Text Note',
+                ),
+
+                onTap: () {
+
+                  Navigator.pop(context);
+
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -312,7 +452,7 @@ class _FolderScreenState extends State<FolderScreen> {
       floatingActionButton: FloatingActionButton(
 
         onPressed: () {
-          pickDocument();
+          showExplorerActions();
         },
 
         child: const Icon(Icons.add),
