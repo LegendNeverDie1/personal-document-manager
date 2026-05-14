@@ -1,4 +1,5 @@
 // FLutter 
+import 'package:documentmanager/screens/text_note_editor_screen.dart';
 import 'package:documentmanager/widgets/category_card.dart';
 import 'package:flutter/material.dart';
 
@@ -216,6 +217,134 @@ class _FolderScreenState extends State<FolderScreen> {
     );
   }
 
+  Future<void> showCreateNoteDialog() async {
+
+    final controller = TextEditingController();
+
+    await showDialog(
+
+      context: context,
+
+      builder: (context) {
+
+        return AlertDialog(
+
+          title: const Text(
+            'Create Text Note',
+          ),
+
+          content: TextField(
+
+            controller: controller,
+
+            decoration:
+                const InputDecoration(
+              hintText: 'Note title',
+            ),
+          ),
+
+          actions: [
+
+            ElevatedButton(
+
+              onPressed: () {
+
+                Navigator.pop(context);
+              },
+
+              child: const Text(
+                'Cancel',
+              ),
+            ),
+
+            ElevatedButton(
+
+              onPressed: () async {
+
+                final noteTitle =
+                    controller.text.trim();
+
+                if (noteTitle.isEmpty) {
+                  return;
+                }
+
+                Navigator.pop(context);
+
+                await createTextNote(
+                  noteTitle,
+                );
+              },
+
+              child: const Text(
+                'Create',
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> createTextNote(String noteTitle,) async {
+
+    final appDir = await getApplicationDocumentsDirectory();
+
+    final folderPath = '${appDir.path}/${widget.folderName}';
+
+    await Directory(folderPath).create(recursive: true,);
+
+    final notePath = '$folderPath/$noteTitle.txt';
+
+    final file = File(notePath);
+
+    await file.writeAsString('');
+
+    final now = DateTime.now();
+
+    final document = DocumentModel()
+
+      ..name = '$noteTitle.txt'
+
+      ..path = notePath
+
+      ..type = 'text'
+
+      ..categoryId = widget.categoryId
+
+      ..createdAt = now
+
+      ..updatedAt = now;
+
+    await _documentService.addDocument(
+      document,
+    );
+
+    await _categoryService.updateCategoryTimestamp(widget.categoryId, );
+
+    await loadDocuments();
+
+    if (!mounted) {
+      return;
+    }
+
+    Navigator.push(
+
+      context,
+
+      MaterialPageRoute(
+
+        builder: (context) =>
+            TextNoteEditorScreen(
+
+          notePath: notePath,
+
+          noteTitle: '$noteTitle.txt',
+        ),
+      ),
+    );
+  }
+
+
   void showExplorerActions() {
 
     showModalBottomSheet(
@@ -281,7 +410,8 @@ class _FolderScreenState extends State<FolderScreen> {
                 onTap: () {
 
                   Navigator.pop(context);
-
+                  
+                  showCreateNoteDialog();
                 },
               ),
             ],
@@ -424,7 +554,28 @@ class _FolderScreenState extends State<FolderScreen> {
                             document: document,
 
                             onTap: () {
+                              // Text Page below 
+                              if (document.type == 'text') {
 
+                                Navigator.push(
+
+                                  context,
+
+                                  MaterialPageRoute(
+
+                                    builder: (context) =>
+                                        TextNoteEditorScreen(
+
+                                      notePath: document.path,
+
+                                      noteTitle: document.name,
+                                    ),
+                                  ),
+                                );
+
+                                return;
+                              }
+                              // Document Page below 
                               Navigator.push(
 
                                 context,

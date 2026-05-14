@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+// Screens
+import 'package:documentmanager/screens/text_note_editor_screen.dart';
+
 class DocumentViewerScreen extends StatelessWidget {
 
   final String documentPath;
@@ -46,9 +49,19 @@ class DocumentViewerScreen extends StatelessWidget {
             );
           }
 
+          if (documentType == 'text') {
+
+            return TextNoteEditorScreen(
+
+              notePath: documentPath,
+
+              noteTitle: documentName,
+            );
+          }
+
           return const Center(
             child: Text(
-              'Unsupported file type',
+              'Unsupported document type',
             ),
           );
         },
