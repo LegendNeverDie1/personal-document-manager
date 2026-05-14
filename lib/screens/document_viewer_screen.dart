@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,12 +16,16 @@ class DocumentViewerScreen extends StatelessWidget {
   final String documentType;
 
   final String documentName;
+  final int documentId; 
+  final int categoryId;
 
   const DocumentViewerScreen({
     super.key,
     required this.documentPath,
     required this.documentType,
     required this.documentName,
+    required this.documentId, 
+    required this.categoryId,
   });
 
   @override
@@ -56,6 +61,8 @@ class DocumentViewerScreen extends StatelessWidget {
               notePath: documentPath,
 
               noteTitle: documentName,
+              documentId: documentId,
+              categoryId: categoryId,
             );
           }
 

@@ -7,10 +7,15 @@ class TextNoteEditorScreen extends StatefulWidget{
   final String notePath; 
   final String noteTitle; 
 
+  final int documentId;
+  final int categoryId;
+
   const TextNoteEditorScreen({
     super.key, 
     required this.notePath,
     required this.noteTitle, 
+    required this.documentId,
+    required this.categoryId,
   });
 
   @override 

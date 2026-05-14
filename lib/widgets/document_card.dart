@@ -1,4 +1,5 @@
 import 'package:documentmanager/models/document_model.dart';
+import 'package:documentmanager/utils/date_formatter.dart';
 import 'package:flutter/material.dart';
 
 class DocumentCard extends StatelessWidget {
@@ -67,11 +68,7 @@ class DocumentCard extends StatelessWidget {
 
                     const SizedBox(height: 6),
 
-                    Text(
-                      'Uploaded on '
-                      '${document.createdAt.day}/'
-                      '${document.createdAt.month}/'
-                      '${document.createdAt.year}',
+                    Text(formatUpdatedAt(document.updatedAt,),
 
                       style: Theme.of(context)
                           .textTheme

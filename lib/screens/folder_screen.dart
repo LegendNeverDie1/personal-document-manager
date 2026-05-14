@@ -339,6 +339,9 @@ class _FolderScreenState extends State<FolderScreen> {
           notePath: notePath,
 
           noteTitle: '$noteTitle.txt',
+
+          documentId: document.id,
+          categoryId: widget.categoryId,
         ),
       ),
     );
@@ -410,7 +413,7 @@ class _FolderScreenState extends State<FolderScreen> {
                 onTap: () {
 
                   Navigator.pop(context);
-                  
+
                   showCreateNoteDialog();
                 },
               ),
@@ -567,8 +570,9 @@ class _FolderScreenState extends State<FolderScreen> {
                                         TextNoteEditorScreen(
 
                                       notePath: document.path,
-
                                       noteTitle: document.name,
+                                      documentId: document.id,
+                                      categoryId: widget.categoryId,
                                     ),
                                   ),
                                 );
@@ -593,6 +597,9 @@ class _FolderScreenState extends State<FolderScreen> {
 
                                     documentName:
                                         document.name,
+
+                                    documentId: document.id,
+                                    categoryId: widget.categoryId,
                                   ),
                                 ),
                               );
