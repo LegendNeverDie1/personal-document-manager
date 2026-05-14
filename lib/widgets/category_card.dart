@@ -1,5 +1,10 @@
-import 'package:documentmanager/models/category_model.dart';
 import 'package:flutter/material.dart';
+
+// Models
+import 'package:documentmanager/models/category_model.dart';
+
+// Utils 
+import 'package:documentmanager/utils/date_formatter.dart';
 
 class CategoryCard extends StatelessWidget {
 
@@ -62,8 +67,8 @@ class CategoryCard extends StatelessWidget {
                     const SizedBox(height: 6),
 
                     Text(
-                      'Last Updated on ${category.updatedAt.day}/${category.updatedAt.month}/${category.updatedAt.year}',
-
+                      formatUpdatedAt(category.updatedAt,), 
+                      
                       style: Theme.of(context)
                           .textTheme
                           .bodyMedium,
